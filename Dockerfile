@@ -47,62 +47,17 @@ RUN chown hduser:hadoop /home/hduser/.ssh/config
 RUN echo 'hduser:hadoop' | chpasswd
 
 
-#Install Maven 
-COPY apache-maven-3.3.9-bin.tar.gz /usr/local/apache-maven-3.3.9-bin.tar.gz
-RUN tar -xzvf /usr/local/apache-maven-3.3.9-bin.tar.gz -C /usr/local/
-RUN mv /usr/local/apache-maven-3.3.9 /usr/local/maven
-RUN rm -rf /usr/local/apache-maven-3.3.9-bin.tar.gz
-RUN mv /usr/local/maven/conf/settings.xml /usr/local/maven/conf/settings.xml_bk
-COPY settings.xml /usr/local/maven/conf/
-RUN chown -R hduser:hadoop /usr/local/maven
-
-#Maven Environemtn Setup
-ENV MVN_HOME /usr/local/maven
-ENV PATH $PATH:$MVN_HOME/bin
 
 RUN su - hduser -c "echo 'export JAVA_HOME=/usr/local/jdk1.7' >> /home/hduser/.bashrc"
 RUN su - hduser -c "echo 'export PATH=$PATH:$JAVA_HOME/bin' >> /home/hduser/.bashrc"
-RUN echo 'export MVN_HOME=/usr/local/maven' >> /home/hduser/.bashrc
-RUN echo 'export PATH=$PATH:$MVN_HOME/bin' >> /home/hduser/.bashrc
 
 RUN java -version
-RUN mvn -version
-
-#RUN apt-get install -y git
-#RUN cd /usr/local/
-#RUN git clone https://github.com/cloudera/hue.git
-##RUN chown -R hduser:hadoop /hue
-
 
 #Install Hue
-COPY hue.tar.gz /usr/local/hue.tar.gz
-RUN tar -xzvf /usr/local/hue.tar.gz -C /usr/local/
+COPY hue-all-installed.tar.gz /usr/local/hue-all-installed.tar.gz
+RUN tar -xzvf /usr/local/hue-all-installed.tar.gz -C /usr/local/
 RUN rm -rf /usr/local/hue.tar.gz
 RUN chown -R hduser:hadoop /usr/local/hue
-
-RUN mkdir /usr/lib/repository
-#RUN chown -R hduser:hadoop /usr/lib/repository
-
-#Install Maven Rpository
-COPY repository.tar.gz /usr/lib/repository.tar.gz
-RUN tar -xzvf /usr/lib/repository.tar.gz -C /usr/lib/
-RUN rm -rf /usr/local/repository.tar.gz
-#RUN chown -R hduser:hadoop /usr/lib/repository
-
-#Maven Environemtn Setup
-ENV M2_HOME /usr/local/maven
-ENV M2 $M2_HOME/bin
-ENV PATH $PATH:$M2_HOME/bin
-
-RUN echo 'export M2_HOME=/usr/local/maven' >> /home/hduser/.bashrc
-RUN echo 'export M2=$M2_HOME/bin' >> /home/hduser/.bashrc
-RUN echo 'export PATH=$PATH:$M2_HOME/bin' >> /home/hduser/.bashrc
-
-RUN mvn -version
-
-
-WORKDIR /usr/local/hue
-RUN make apps
 
 
 ###################################################################
@@ -113,7 +68,6 @@ RUN make apps
 ###################################################################
 ###################################################################
 
-RUN chown -R hduser:hadoop /usr/local/hue
 
 COPY pseudo-distributed.ini /usr/local/hue/desktop/conf/pseudo-distributed.ini
 COPY webhdfs.py /usr/local/hue/desktop/libs/hadoop/src/hadoop/fs/webhdfs.py
