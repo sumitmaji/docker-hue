@@ -5,4 +5,5 @@
 #docker run -d -v /var/run/docker.sock:/tmp/docker.sock --link consul:consul --name registrator -h registrator gliderlabs/registrator:latest consul://192.168.1.102:8500
 
 
-docker run -d -p 8000:8000 -v /home/sumit/repository:/usr/lib/repository --name hue -h master sumit/hue /etc/bootstrap.sh -d
+#docker run -d -p 8000:8000 -v /home/sumit/repository:/usr/lib/repository --name hue -h master sumit/hue /etc/bootstrap.sh -d
+docker run -d -it -p 8000:8000 -v /usr/local/repo/repository_hue:/usr/lib/repository --name hue --net cloud.com -h hue master.cloud.com:5000/hue /bin/bash
